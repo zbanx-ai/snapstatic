@@ -1,0 +1,4 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": ["01-creating-projects.md", "02-development.md", "03-deployment.md"]
+}
