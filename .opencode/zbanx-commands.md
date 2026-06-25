@@ -1,8 +1,9 @@
 # zbanx 命令总览
 
-> 供 AI 读取。本文件覆盖 zbanx CLI 的全部命令。
+> ⚠️ 本文件是 zbanx CLI 命令的**唯一权威**规范，AI 必须严格遵守。
 > 执行任何命令前，确保当前目录为 zbanx 项目（含 `deploy.json`），`init` 除外。
 > 密码输入必须交互式（用户在终端完成），AI 不得硬编码或记录密码。
+> **不得**使用其他命令、脚本或手动操作替代本文件中规定的命令。
 
 ---
 
@@ -19,24 +20,69 @@
 
 ## 1. 创建项目：`init`
 
+> ⚠️ 必须严格按以下步骤执行，不得跳过、不得调换、不得用其他命令替代。
+> 创建项目的**唯一正确方式**是 `bun x zbanx init`。
+
+### 步骤 1：收集并校验项目名
+
+询问用户想要的项目名，校验规则：
+- 仅允许：小写字母、数字、连字符 `-`
+- 必须以字母或数字开头
+- 不能包含空格、大写、下划线或特殊字符
+- 合法示例：`my-blog`、`client-report`、`portfolio-2024`
+- 非法示例：`My Blog`、`client_report`、`-bad-start`
+
+如果用户没有提供项目名，**主动询问**。
+如果项目名不合法，**提示用户修改**，不要自行"修正"后执行。
+
+> 若用户想在当前目录创建，项目名使用 `.`。
+
+### 步骤 2：执行创建命令
+
 ```bash
 bun x zbanx init <project-name>
 ```
 
-**参数**
-- `<project-name>`：小写字母 + 数字 + 连字符（如 `my-blog`）
-- 使用 `.` 在当前目录创建
+等待命令完成。该命令**自动完成**以下所有工作，AI **不得**手动执行其中任何一步：
+- 从 GitHub 下载 snapstatic 模板 ZIP 包（`zbanx-ai/snapstatic`）
+- 解压并写入项目文件（包含 Vite + React + TypeScript + Tailwind v4 + coss/shadcn + @antv/infographic 全套配置）
+- 运行 `bun install` 安装依赖
+- 运行 `bun run build` 验证构建
 
-**可选**
+**可选参数**
 - `--overwrite`：目标目录已存在时覆盖
 
-**执行后**
-1. 进入项目目录
-2. 执行 `bun install`（init 已自动完成，无需重复）
-3. 执行 `bun dev` 启动开发服务器
+### 步骤 3：监控执行过程
 
-> 模板从 GitHub 下载（`zbanx-ai/snapstatic`），中国大陆网络可能卡住。
-> 详见本文「GitHub 下载问题」章节。
+- 若命令 **30 秒内无输出**，或用户反馈"卡住了"、"下不了"、"太慢了"
+- **立即停止等待**，参考本文「GitHub 下载问题」章节，主动询问用户代理端口
+
+### 步骤 4：验证成功
+
+CLI 输出包含以下字样即表示成功：
+```
+[SUCCESS] Project "<name>" created!
+```
+
+若输出错误信息（如 `Failed to download template`、`bun install failed`、`Build verification failed`），参考本文「常见错误总览」章节处理。
+
+### 步骤 5：告知用户下一步
+
+明确告知用户：
+```
+cd <project-name>
+bun dev
+```
+
+然后浏览器访问 `http://localhost:5173` 查看效果。
+
+### 🚫 禁止行为
+
+- ❌ 不要使用 `bun create vite@latest`、`create-react-app`、`npm init vite` 等其他脚手架命令
+- ❌ 不要手动下载 GitHub 模板 ZIP 并解压
+- ❌ 不要跳过 `bun x zbanx init` 而直接写文件
+- ❌ 不要在 init 后手动运行 `bun install` 或 `bun run build`（init 已自动完成）
+- ❌ 不要在 init 后追加安装 Tailwind、shadcn 等依赖（模板已内置）
 
 ---
 
